@@ -90,6 +90,14 @@
         justify-content: center;
         transition: all 0.4s ease;
         font-size: 1.2rem;
+        animation: gentlePulse 2.5s ease-in-out infinite;
+    }
+    @keyframes gentlePulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(157, 109, 255, 0.5); }
+        50% { box-shadow: 0 0 0 12px rgba(157, 109, 255, 0); }
+    }
+    .audio-toggle.playing {
+        animation: none;
     }
     .audio-toggle:hover {
         background: var(--lila);
@@ -785,9 +793,201 @@
         opacity: 0;
         pointer-events: none;
     }
+
+    /* ===== Welcome gate (portal) ===== */
+    .welcome-gate {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: var(--negro);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        transition: opacity 1.5s ease, visibility 1.5s ease;
+    }
+
+    .welcome-gate.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .welcome-gate::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse at 50% 50%, rgba(157, 109, 255, 0.2), transparent 60%),
+            radial-gradient(ellipse at 20% 80%, rgba(107, 63, 184, 0.15), transparent 50%);
+        pointer-events: none;
+    }
+
+    .welcome-gate::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(2px 2px at 20% 30%, var(--blanco), transparent),
+            radial-gradient(1px 1px at 60% 70%, var(--lila-soft), transparent),
+            radial-gradient(1px 1px at 80% 20%, var(--blanco), transparent),
+            radial-gradient(2px 2px at 90% 60%, var(--lila), transparent),
+            radial-gradient(1px 1px at 33% 80%, var(--lila-soft), transparent);
+        background-size: 800px 800px;
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 1;
+        max-width: 600px;
+        opacity: 0;
+        animation: fadeUp 1.5s ease 0.4s forwards;
+    }
+
+    .welcome-anchor {
+        font-size: 4rem;
+        color: var(--lila);
+        margin-bottom: 1.5rem;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .welcome-eyebrow {
+        font-family: 'Italiana', serif;
+        font-size: 0.9rem;
+        letter-spacing: 0.5em;
+        color: var(--lila-soft);
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-title {
+        font-family: 'Italiana', serif;
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-weight: 400;
+        line-height: 1;
+        background: linear-gradient(180deg, var(--blanco) 30%, var(--lila-soft));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    .welcome-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+        color: var(--lila-soft);
+        margin-bottom: 2.5rem;
+    }
+
+    .welcome-text {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: clamp(1rem, 1.5vw, 1.2rem);
+        color: var(--gris-luna);
+        line-height: 1.7;
+        margin-bottom: 3rem;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .welcome-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-family: 'Italiana', serif;
+        font-size: 0.85rem;
+        letter-spacing: 0.4em;
+        color: var(--blanco);
+        text-transform: uppercase;
+        background: transparent;
+        border: 1px solid var(--lila);
+        padding: 1.2rem 2.8rem;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--lila);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+        z-index: -1;
+    }
+
+    .welcome-button:hover::before {
+        transform: scaleX(1);
+    }
+
+    .welcome-button:hover {
+        color: var(--blanco);
+        box-shadow: 0 0 40px rgba(157, 109, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .welcome-button-icon {
+        font-size: 1.1rem;
+        animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseIcon {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+
+    .welcome-hint {
+        font-family: 'Italiana', serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        color: var(--gris-luna);
+        text-transform: uppercase;
+        margin-top: 2rem;
+        opacity: 0.6;
+    }
+
+    /* Lock body scroll while gate is open */
+    body.gate-open {
+        overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .welcome-button {
+            padding: 1rem 2rem;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 </head>
-<body>
+<body class="gate-open">
+
+<!-- ===== WELCOME GATE (Portal that activates music) ===== -->
+<div id="welcomeGate" class="welcome-gate">
+    <div class="welcome-content">
+        <div class="welcome-anchor">⚓</div>
+        <div class="welcome-eyebrow">Para ti</div>
+        <h1 class="welcome-title">Mi cielo</h1>
+        <div class="welcome-name">Angie Téllez</div>
+        <p class="welcome-text">
+            Hice algo para ti. Antes de empezar, ponte cómoda — esto tiene música,
+            y prefiero que la escuches.
+        </p>
+        <button id="enterButton" class="welcome-button">
+            <span class="welcome-button-icon">♪</span>
+            <span>Entrar</span>
+        </button>
+        <p class="welcome-hint">Toca el botón para comenzar</p>
+    </div>
+</div>
 
 <!-- Background atmosphere -->
 <div class="nebula"></div>
@@ -1157,6 +1357,7 @@
     // ===== YouTube Audio (background music) =====
     let player;
     let isPlaying = false;
+    let playerReady = false;
 
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
@@ -1175,27 +1376,72 @@
                 'modestbranding': 1
             },
             events: {
-                'onReady': onPlayerReady
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
             }
         });
     }
 
     function onPlayerReady(event) {
         event.target.setVolume(50);
+        playerReady = true;
     }
 
-    document.getElementById('audioToggle').addEventListener('click', function() {
+    function onPlayerStateChange(event) {
+        // YT.PlayerState.PLAYING = 1, PAUSED = 2
+        const btn = document.getElementById('audioToggle');
+        if (event.data === 1) {
+            isPlaying = true;
+            btn.textContent = '⏸';
+            btn.title = 'Pausar música';
+            btn.classList.add('playing');
+        } else if (event.data === 2) {
+            isPlaying = false;
+            btn.textContent = '♪';
+            btn.title = 'Reproducir música';
+            btn.classList.remove('playing');
+        }
+    }
+
+    // ===== Welcome Gate: enter button activates music =====
+    const enterButton = document.getElementById('enterButton');
+    const welcomeGate = document.getElementById('welcomeGate');
+
+    enterButton.addEventListener('click', function() {
+        // Try to play music (this is a real user gesture, so it should work)
+        const tryPlay = () => {
+            if (player && typeof player.playVideo === 'function') {
+                try {
+                    player.unMute();
+                    player.setVolume(50);
+                    player.playVideo();
+                } catch (e) {}
+            } else {
+                // Player not ready yet, wait a bit
+                setTimeout(tryPlay, 200);
+            }
+        };
+        tryPlay();
+
+        // Hide gate with smooth transition
+        welcomeGate.classList.add('hidden');
+        document.body.classList.remove('gate-open');
+
+        // Remove gate from DOM after transition for accessibility
+        setTimeout(() => {
+            welcomeGate.style.display = 'none';
+        }, 1600);
+    });
+
+    // Manual button toggle
+    document.getElementById('audioToggle').addEventListener('click', function(e) {
+        e.stopPropagation();
         if (!player || typeof player.playVideo !== 'function') return;
         if (isPlaying) {
             player.pauseVideo();
-            this.textContent = '♪';
-            this.title = 'Reproducir música';
         } else {
             player.playVideo();
-            this.textContent = '⏸';
-            this.title = 'Pausar música';
         }
-        isPlaying = !isPlaying;
     });
 
     // Make YouTube callback available globally
